@@ -1,0 +1,29 @@
+## aws cloudformation validate-template --template-body file://bg-dns.yml
+## aws cloudformation create-stack --stack-name bg-dns --template-body file://bg-dns.yml
+## aws cloudformation update-stack --stack-name bg-dns --template-body file://bg-dns.yml
+## Blue: Current Production
+
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Blue Green DNS Management
+
+Resources:
+  bluegreendns:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneName: okenhe.com.
+      Comment: Blue Green DNS Recoreds Management
+      RecordSets:
+      - Name: www.okenhe.com.
+        Type: CNAME
+        TTL: '0'
+        SetIdentifier: blue
+        Weight: '1'
+        ResourceRecords:
+        - stack-blue-elb-oylyt9dldm6d-1564251076.ap-southeast-1.elb.amazonaws.com
+      - Name: www.okenhe.com.
+        Type: CNAME
+        TTL: '0'
+        SetIdentifier: green
+        Weight: '0'
+        ResourceRecords:
+        - stack-green-elb-16s5ag9bebc6p-1763969359.ap-southeast-1.elb.amazonaws.com
